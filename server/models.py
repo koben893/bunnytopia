@@ -56,9 +56,9 @@ class User(db.Model, SerializerMixin):
 
     @validates( 'age' )
     def validate_age( self, key, new_age ):
-        if 21 <= new_age:
+        if 0 <= new_age:
             return new_age
-        raise ValueError('Must be older than 21')
+        raise ValueError('Must be born')
     
     
     def __repr__(self):

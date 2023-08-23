@@ -1,17 +1,17 @@
 import React, { useEffect,useState } from "react";
-import NewRestaurantForm from "./NewRestaurantForm";
-import './Restaurant.css';
+import NewBunnyForm from "./NewBunnyForm";
+import './Bunnies.css';
 
 
-function Restaurants() {
+function Bunnies() {
 
-    const [restaurants, setRestaurants] = useState([])
-    const addRestaruantToState = NewRestaurantObj =>{
-        setRestaurants( [...restaurants, NewRestaurantObj])
+    const [bunnies, setBunnies] = useState([])
+    const addBunnyToState = NewBunnyObj =>{
+        setBunnies( [...bunnies, NewBunnyObj])
     }
 
         useEffect(() => {
-            fetch('http://127.0.0.1:5557/restaurants')
+            fetch('http://127.0.0.1:5557/bunnies')
                 .then((response) => response.json())
                 .then((data) => setRestaurants(data));
         }, []);
@@ -19,7 +19,7 @@ function Restaurants() {
         return (
             <div className="header">
                 <h1 className="center">Top Rated Restaurants</h1>
-                <NewRestaurantForm addRestaurantToState={addRestaruantToState}/>
+                <NewBunnyForm addRestaurantToState={addRestaruantToState}/>
                 <div className="grid-container">
                     {restaurants.map((restaurant) => (
                         <div key={restaurant.id} className="card">
@@ -38,4 +38,4 @@ function Restaurants() {
 
 
 
-export default Restaurants;
+export default Bunnies;

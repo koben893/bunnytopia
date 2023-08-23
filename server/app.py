@@ -7,10 +7,9 @@
 # Local imports
 from config import app, db, api, bcrypt
 # Add your model imports
-from models import Restaurant, User, Rating, Review
+from models import Bunny, User, Rating, Review
 from flask_restful import Resource
 from flask import make_response, jsonify, request, session
-import os
 
 # Views go here!
 
@@ -18,38 +17,38 @@ import os
 def index():
     return '<h1>Phase 4 Project Server</h1>'
 
-class Restaurants (Resource):
+class Bunnies(Resource):
     def get(self):
-        restaurants = Restaurant.query.all()
-        restaurants_dict_list = [restaurant.to_dict( rules= ('-ratings',)) for restaurant in restaurants]
-        return make_response (restaurants_dict_list)
+        bunnies = Bunny.query.all()
+        bunnies_dict_list = [bunny.to_dict( rules= ('-ratings',)) for bunny in bunnies]
+        return make_response (bunnies_dict_list)
     
     def post(self):
         data = request.get_json()
-        new_restaurant = Restaurant(name = data['name'], rating = ['rating'])
+        new_bunny = Bunny(name = data['name'], rating = ['rating'])
         db.session.commit()
         db.session.commit()
-        return make_response(new_restaurant.to_dict(), 201)
+        return make_response(new_bunny.to_dict(), 201)
 
-api.add_resource (Restaurants, '/restaurants')
+api.add_resource (Bunnies, '/bunnies')
 
-class RestaurantByID(Resource):
+class BunnyByID(Resource):
     def get(self,id):
-        restaurant = Restaurant.query.filter_by(id=id).first()
-        if not restaurant:
-            return make_response({"error": "Restaurant not found"}, 404)
-        return make_response(restaurant.to_dict())
+        bunny = Bunny.query.filter_by(id=id).first()
+        if not bunny:
+            return make_response({"error": "Bunny not found"}, 404)
+        return make_response(bunny.to_dict())
     
     def delete (self, id):
-        restaurant = Restaurant.query.filter_by_id(id=id).first()
-        if not restaurant:
-            return make_response ({"error": "Restaurant not found"},404)
+        bunny = Bunny.query.filter_by_id(id=id).first()
+        if not bunny:
+            return make_response ({"error": "Bunny not found"},404)
         
-        db.session.delete(restaurant)
+        db.session.delete(bunny)
         db.session.commit()
         return make_response ("", 204)
     
-api.add_resource(RestaurantByID, '/restaurants/<int:id>')
+api.add_resource(BunnyByID, '/bunnies/<int:id>')
 
 class Users (Resource):
     def get (self):
@@ -83,11 +82,11 @@ class Ratings(Resource):
 
         for rating in ratings:
             user = User.query.get(rating.user_id)
-            restaurant = Restaurant.query.get(rating.restaurant_id)
+            bunny = Bunny.query.get(rating.bunny_id)
             rating_data = {
                 "rating": rating.rating,
                 "user_name": user.username,
-                "restaurant_name": restaurant.name
+                "bunny_name": bunny.name
             }
             ratings_with_names.append(rating_data)
 
@@ -98,7 +97,7 @@ class Ratings(Resource):
         try:
             rating = Rating(
                 rating=data['rating'],
-                restaurant_id=data['restaurant_id'],
+                bunny_id=data['bunny_id'],
                 user_id=data['user_id']
             )
         except ValueError as value_error:
