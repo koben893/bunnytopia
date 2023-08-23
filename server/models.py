@@ -10,8 +10,8 @@ from config import db, bcrypt
 # Models go here!
 
 
-class Restaurant(db.Model, SerializerMixin):
-    __tablename__ = 'restaurants'
+class Bunny(db.Model, SerializerMixin):
+    __tablename__ = 'bunnies'
 
     # serialize_rules = ( '-reviews', '-user.reviews', )
 
@@ -22,19 +22,19 @@ class Restaurant(db.Model, SerializerMixin):
     # Add relationship
 
 
-    ratings = db.relationship( 'Rating', back_populates = 'restaurant', cascade = 'all, delete-orphan' )
+    ratings = db.relationship( 'Rating', back_populates = 'bunny', cascade = 'all, delete-orphan' )
     users = association_proxy( 'ratings', 'user' )
 
     # Add serialization rules
     
     def __repr__(self):
-        return f'<Restaurant id={self.id} name={self.name}>'
+        return f'<Bunny id={self.id} name={self.name}>'
 
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     # Add serialization rules
-    #serialize_rules = ( '-reviews.user', '-reviews.restaurant.reviews' )
+    #serialize_rules = ( '-reviews.user', '-reviews.bunny.reviews' )
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -45,7 +45,7 @@ class User(db.Model, SerializerMixin):
 
     # Add relationship
     ratings = db.relationship( 'Rating', back_populates = 'user' )
-    restaurants = association_proxy( 'ratings', 'restaurant' )
+    bunnies = association_proxy( 'ratings', 'bunny' )
     
     # Add validation
     @validates( 'name' )
@@ -90,9 +90,9 @@ class Rating(db.Model, SerializerMixin):
     # Add relationships 
 
     user_id = db.Column( db.Integer, db.ForeignKey( 'users.id' ) )
-    restaurant_id = db.Column( db.Integer, db.ForeignKey( 'restaurants.id' ) )
+    bunny_id = db.Column( db.Integer, db.ForeignKey( 'bunnies.id' ) )
 
-    restaurant = db.relationship( 'Restaurant', back_populates = 'ratings' )
+    bunny = db.relationship( 'Bunny', back_populates = 'ratings' )
     user = db.relationship( 'User', back_populates = 'ratings' )
 
     # Add serialization rules
