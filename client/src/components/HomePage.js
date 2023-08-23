@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 
 function HomePage({user, onLogin}) {
     
-        const [restaurants, setRestaurants] = useState([])
+        const [bunnies, setBunnies] = useState([])
     
     useEffect(() => {
-        fetch('http://127.0.0.1:5557/restaurants')
+        fetch('http://127.0.0.1:5557/bunnies')
             .then((response) => response.json())
-            .then((data) => setRestaurants(data));
+            .then((data) => setBunnies(data));
     }, []);
     
     return (
         <div className="header">
-            <h1 className="center">Top Rated Restaurants</h1>
+            <h1 className="center">Your Bun Buns</h1>
             <div className="grid-container">
-                {restaurants.map((restaurant) => (
-                    <div key={restaurant.id} className="card">
-                        <img>{restaurant.image}</img>
+                {bunnies.map((bunny) => (
+                    <div key={bunny.id} className="card">
+                        <img>{bunny.image}</img>
                         <h1>
-                            {restaurant.ratings}
+                            {bunny.logs}
                         </h1>
-                        <h3>{restaurant.name}</h3>
+                        <h3>{bunny.name}</h3>
                         <button className="cardbutton" type="submit">Favorites</button>
                     </div>
                 ))}

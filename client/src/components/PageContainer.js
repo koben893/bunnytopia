@@ -1,8 +1,8 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 // import Home from './Home'
-import Ratings from './Ratings'
-import Restaurants from "./Restaurants"
+import Logs from './Reviews'
+import Bunnies from "./Bunnies"
 import Reviews from './Reviews';
 import About from './About'
 
@@ -10,11 +10,11 @@ function PageContainer() {
     return (
         <>
             <Switch>
-        <Route path="/ratings">
-            <Ratings />
+        <Route path="/logs">
+            <Logs />
         </Route>
-        <Route path="/restaurants">
-            <Restaurants />
+        <Route path="/bunnies">
+            <Bunnies />
         </Route>
         <Route path="/reviews">
             <Reviews />

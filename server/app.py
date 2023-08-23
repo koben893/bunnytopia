@@ -7,7 +7,7 @@
 # Local imports
 from config import app, db, api, bcrypt
 # Add your model imports
-from models import Bunny, User, Rating, Review
+from models import Bunny, User, Log, Review
 from flask_restful import Resource
 from flask import make_response, jsonify, request, session
 
@@ -20,12 +20,12 @@ def index():
 class Bunnies(Resource):
     def get(self):
         bunnies = Bunny.query.all()
-        bunnies_dict_list = [bunny.to_dict( rules= ('-ratings',)) for bunny in bunnies]
+        bunnies_dict_list = [bunny.to_dict( rules= ('-logs',)) for bunny in bunnies]
         return make_response (bunnies_dict_list)
     
     def post(self):
         data = request.get_json()
-        new_bunny = Bunny(name = data['name'], rating = ['rating'])
+        new_bunny = Bunny(name = data['name'], log = ['log'])
         db.session.commit()
         db.session.commit()
         return make_response(new_bunny.to_dict(), 201)
@@ -53,7 +53,7 @@ api.add_resource(BunnyByID, '/bunnies/<int:id>')
 class Users (Resource):
     def get (self):
         users = User.query.all()
-        users_dict_list = [user._to_dict_(rules = ('ratings',)) for user in users]
+        users_dict_list = [user._to_dict_(rules = ('logs',)) for user in users]
         if len(users) == 0:
             return make_response({'error': 'no Users'}, 404)
         return make_response(users_dict_list,200)
@@ -75,40 +75,40 @@ class Users (Resource):
     
 api.add_resource(Users, '/users')
 
-class Ratings(Resource):
+class Logs(Resource):
     def get(self):
-        ratings_with_names = []
-        ratings = Rating.query.all()
+        logs_with_names = []
+        logs = Log.query.all()
 
-        for rating in ratings:
-            user = User.query.get(rating.user_id)
-            bunny = Bunny.query.get(rating.bunny_id)
-            rating_data = {
-                "rating": rating.rating,
+        for log in logs:
+            user = User.query.get(log.user_id)
+            bunny = Bunny.query.get(log.bunny_id)
+            log_data = {
+                "log": log.log,
                 "user_name": user.username,
                 "bunny_name": bunny.name
             }
-            ratings_with_names.append(rating_data)
+            logs_with_names.append(log_data)
 
-        return make_response(jsonify(ratings_with_names), 200)
+        return make_response(jsonify(logs_with_names), 200)
 
     def post(self):
         data = request.get_json()
         try:
-            rating = Rating(
-                rating=data['rating'],
+            log = Log(
+                log=data['log'],
                 bunny_id=data['bunny_id'],
                 user_id=data['user_id']
             )
         except ValueError as value_error:
             return make_response({"errors": [str(value_error)]}, 422)
 
-        db.session.add(rating)
+        db.session.add(log)
         db.session.commit()
 
-        return make_response(rating.to_dict(), 201)
+        return make_response(log.to_dict(), 201)
 
-api.add_resource(Ratings, '/ratings')
+api.add_resource(Logs, '/logs')
 
 
 class Reviews(Resource):

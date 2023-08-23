@@ -3,7 +3,7 @@ from random import randint, choice as rc
 from faker import Faker
 
 from app import app
-from models import db, Bunny, Rating, User, Review
+from models import db, Bunny, Log, User, Review
 
 fake = Faker()
 
@@ -12,14 +12,14 @@ def clear_database():
     with app.app_context():
         Bunny.query.delete()
         User.query.delete()
-        Rating.query.delete()
+        Log.query.delete()
         Review.query.delete()
         db.session.commit()
 
 
 def bunnies():
     with app.app_context():
-        R1= Bunny(name = 'Tipper')
+        R1= Bunny(name = 'Als Burger Joint')
         R2= Bunny(name = 'Connies Drive Through')
         R3= Bunny(name = 'Hole in the Wall')
         R4= Bunny(name = 'Bella Sera')
@@ -51,17 +51,17 @@ def create_users():
     return users
 
 
-def create_ratings(bunnies, users):
-    ratings = []
+def create_logs(bunnies, users):
+    logs = []
     for _ in range(20):
-        r = Rating(
+        r = Log(
             user_id=rc([user.id for user in users]),
             bunny_id=rc([bunny.id for bunny in bunnies]),
-            rating=randint(1, 5)
+            log=randint(1, 5)
         )
-        ratings.append(r)
+        logs.append(r)
 
-    return ratings
+    return logs
 
 def reviews():
     with app.app_context():
@@ -74,6 +74,7 @@ def reviews():
         V7 = Review(name = '')
         V8 = Review(name = '')
         V9 = Review(name = '')
+        V10 = Review(name = '')
         V11 = Review(name = '')
         V12 = Review(name = '')
         V13 = Review(name = '')
@@ -81,6 +82,7 @@ def reviews():
         V15 = Review(name = '')
         V16 = Review(name = '')
         V17 = Review(name = '')
+        V18 = Review(name = '')
         V19 = Review(name = '')
         V20 = Review(name = '')
         V21 = Review(name = '')
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     with app.app_context():
         print("Clearing db...")
         Bunny.query.delete()
-        Rating.query.delete()
+        Log.query.delete()
         User.query.delete()
         Review.query.delete()
 
@@ -117,9 +119,9 @@ if __name__ == '__main__':
         db.session.add_all(users)
         db.session.commit()
 
-        print("Seeding ratings...")
-        ratings = create_ratings(bunnies, users)
-        db.session.add_all(ratings)
+        print("Seeding logs...")
+        logs = create_logs(bunnies, users)
+        db.session.add_all(logs)
         db.session.commit()
 
         print("Seeding reviews...")

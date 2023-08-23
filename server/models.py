@@ -22,8 +22,8 @@ class Bunny(db.Model, SerializerMixin):
     # Add relationship
 
 
-    ratings = db.relationship( 'Rating', back_populates = 'bunny', cascade = 'all, delete-orphan' )
-    users = association_proxy( 'ratings', 'user' )
+    logs = db.relationship( 'Log', back_populates = 'bunny', cascade = 'all, delete-orphan' )
+    users = association_proxy( 'logs', 'user' )
 
     # Add serialization rules
     
@@ -44,8 +44,8 @@ class User(db.Model, SerializerMixin):
     
 
     # Add relationship
-    ratings = db.relationship( 'Rating', back_populates = 'user' )
-    bunnies = association_proxy( 'ratings', 'bunny' )
+    logs = db.relationship( 'Log', back_populates = 'user' )
+    bunnies = association_proxy( 'logs', 'bunny' )
     
     # Add validation
     @validates( 'name' )
@@ -56,9 +56,9 @@ class User(db.Model, SerializerMixin):
 
     @validates( 'age' )
     def validate_age( self, key, new_age ):
-        if 0 <= new_age:
+        if 21 <= new_age:
             return new_age
-        raise ValueError('Must be born')
+        raise ValueError('Must be older than 21')
     
     
     def __repr__(self):
@@ -80,34 +80,34 @@ class User(db.Model, SerializerMixin):
             self._password_hash, password.encode('utf-8'))
 
 
-class Rating(db.Model, SerializerMixin):
-    __tablename__ = 'ratings'
+class Log(db.Model, SerializerMixin):
+    __tablename__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True)
     # date = db.Column(db.String, nullable = False )
-    rating = db.Column(db.Integer)
+    log = db.Column(db.Integer)
 
     # Add relationships 
 
     user_id = db.Column( db.Integer, db.ForeignKey( 'users.id' ) )
     bunny_id = db.Column( db.Integer, db.ForeignKey( 'bunnies.id' ) )
 
-    bunny = db.relationship( 'Bunny', back_populates = 'ratings' )
-    user = db.relationship( 'User', back_populates = 'ratings' )
+    bunny = db.relationship( 'Bunny', back_populates = 'logs' )
+    user = db.relationship( 'User', back_populates = 'logs' )
 
     # Add serialization rules
-    serialize_rules =('-user.ratings')
+    serialize_rules =('-user.logs')
     
     # Add validation
-    @validates ('rating')
-    def validates_rating(self,key,new_rating):
-        if 1 <= new_rating <=5:
-            return new_rating
-        raise ValueError ('Rating must be between 1 and 5')
+    @validates ('log')
+    def validates_log(self,key,new_log):
+        if 1 <= new_log <=5:
+            return new_log
+        raise ValueError ('Log must be between 1 and 5')
 
 
     def __repr__(self):
-        return f'<Rating {self.id}>'
+        return f'<Log {self.id}>'
 
 
 class Review(db.Model, SerializerMixin):

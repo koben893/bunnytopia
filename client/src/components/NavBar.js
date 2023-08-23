@@ -32,11 +32,11 @@ function NavBar() {
       </NavLink>
       <NavLink
         className="nav-buttons"
-        to="/restaurants"
+        to="/bunnies"
         exact
         style={linkStyles}
       >
-        Restaurants
+        Bunnies
       </NavLink>
       <NavLink
         to="/reviews"
@@ -47,12 +47,12 @@ function NavBar() {
         Reviews
       </NavLink>
       <NavLink
-        to="/ratings"
+        to="/logs"
         className="nav-buttons"
         exact
         style={linkStyles}
       >
-        Ratings
+        Logs
       </NavLink>
     </>
   );
