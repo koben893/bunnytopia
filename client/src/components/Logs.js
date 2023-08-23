@@ -1,27 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
-function Reviews() {
+function Logs({ user, onLogin }) {
+    const [logs, setLogs] = useState([]);
 
-    const [reviews, setReviews] = useState([])
-    
     useEffect(() => {
-        fetch('http://127.0.0.1:5557/reviews')
+        fetch("http://127.0.0.1:5557/logs")
             .then((response) => response.json())
-            .then((data) => setReviews(data));
+            .then((data) => {
+                console.log(data); // Check the response data in the console
+                setLogs(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching logs:", error);
+            });
     }, []);
-
+    console.log(logs);
     return (
         <div className="header">
-            <h1 className="center">Reviews</h1>
+            <h1>Top Logs</h1>
             <div className="grid-container">
-                {reviews.map((reviews) => (
-                    <div key={reviews.id} className="card">
-                        <h3>{reviews.name}</h3>
+                {logs.map((log) => (
+                    <div key={log.id} className="card">
+                        <h3>Log: {log.log}</h3>
+                        <p>User: {log.user_name}</p>
+                        <p>Bunny: {log.bunny_name}</p>
+                        <button className="cardbutton" type="submit">
+                            Favorites
+                        </button>
                     </div>
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
-export default Reviews
+export default Logs;

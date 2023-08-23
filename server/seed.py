@@ -3,7 +3,7 @@ from random import randint, choice as rc
 from faker import Faker
 
 from app import app
-from models import db, Bunny, Rating, User, Review
+from models import db, Bunny, Log, User, Review
 
 fake = Faker()
 
@@ -12,7 +12,7 @@ def clear_database():
     with app.app_context():
         Bunny.query.delete()
         User.query.delete()
-        Rating.query.delete()
+        Log.query.delete()
         Review.query.delete()
         db.session.commit()
 
@@ -51,50 +51,50 @@ def create_users():
     return users
 
 
-def create_ratings(bunnies, users):
-    ratings = []
+def create_logs(bunnies, users):
+    logs = []
     for _ in range(20):
-        r = Rating(
+        r = Log(
             user_id=rc([user.id for user in users]),
             bunny_id=rc([bunny.id for bunny in bunnies]),
-            rating=randint(1, 5)
+            log=randint(1, 5)
         )
-        ratings.append(r)
+        logs.append(r)
 
-    return ratings
+    return logs
 
 def reviews():
     with app.app_context():
-        V1 = Review(name = 'Best burger I ever had!')
-        V2 = Review(name = 'An italian masterpiece in every bite; Bella Sara`s commitment to genuine flavors earns top marks.')
-        V3 = Review(name = 'Nostalgic and fun. Mario and Luigi brings a playful twist to Italian cuisine, though flavors could be bolder.')
-        V4 = Review(name = 'Cozy spot with surprising culinary gems. The name says it all,  don`t judge this restaurant by its appearance.')
-        V5 = Review(name = 'A mixed experience at Hole in the Wall. Some dishes were hits, others misses. A unique dining adventure nonetheless.')
-        V6 = Review(name = 'Flavors that remind you of Nonna`s kitchen. Bella Sera`s charm lies in its rustic simplicity.')
-        V7 = Review(name = 'A must-visit for gamers and foodies alike. Mario and Luigi marry two worlds seamlessly.')
-        V8 = Review(name = 'Eclectic menu, cozy atmosphere. Hole in the Wall is a gastronomic journey you won`t forget.')
-        V9 = Review(name = 'Subpar at best.')
-        V10 = Review(name = 'A haven for coffee aficionados. The V Cafe`s brews are masterfully crafted, and the atmosphere is inviting.')
-        V11 = Review(name = 'A hidden gem for Italian cuisine lovers. Mamma Mia`s is a delightful escape from the ordinary')
-        V12 = Review(name = 'Underwhelmed by the taste, but the atmosphere was cozy and inviting. Maybe better for drinks than a full dining experience.')
-        V13 = Review(name = 'Budget-friendly waffle fix. McDonald`s Waffles gets the job done without breaking the bank.')
-        V14 = Review(name = 'Pleasantly surprised by the presentation and flavors. However, the service was a bit slow and detracted from the overall experience.')
-        V15 = Review(name = 'Creative theme, hit-or-miss taste. Mario and Luigi`s execution varies, but the experience is enjoyable.')
-        V16 = Review(name = 'Quick and convenient meals at Connie`s Drive Through. A go-to spot for fast comfort food.')
-        V17 = Review(name = 'Stale food. Was not worth the 50 min drive.')
-        V18 = Review(name = 'The V Cafe`s commitment to quality is evident in every sip. A coffee lover`s paradise.')
-        V19 = Review(name = 'Bellissimo! Bella Sera`s menu is a symphony of Italian taste, prepared with passion and skill.')
-        V20 = Review(name = 'Breakfast paradise at Jeff`s Pancake House. The pancakes are fluffy perfection, and the variety is impressive.')
-        V21 = Review(name = 'A seafood lover`s dream come true. Bob`s Gator Shack is a culinary gem by the water.')
-        V22 = Review(name = 'McDonald`s Waffles surprised me with their taste. An enjoyable treat when you`re on the go.')
-        V23 = Review(name = 'Flavors at Mamma Mia`s were underwhelming. The ambiance is pleasant, but the taste could use refinement.')
-        V24 = Review(name = 'Gulf-inspired dishes that transport you to the coast. Bob`s Gator Shack`s flavors are on point.')
-        V25 = Review(name = 'Reliable fast-food fare at Connie`s Drive Through. Quick service and no surprises.')
-        V26 = Review(name = 'The V Cafe sets the bar high for coffee excellence. A destination for true coffee connoisseurs.')
-        V27 = Review(name = 'A pancake haven worth visiting. Jeff`s Pancake House`s dedication to quality shines through.')
-        V28 = Review(name = 'A mixed bag of flavors. Some dishes were a delight, while others left me questioning the choices.')
-        V29 = Review(name = 'Amusing atmosphere, moderate taste. Mario and Luigi rely on their theme to stand out.')
-        V30 = Review(name = 'A decent experience overall. The ambiance was lovely, but the taste didn`t match the high expectations set by the decor.')
+        V1 = Review(name = '')
+        V2 = Review(name = '')
+        V3 = Review(name = '')
+        V4 = Review(name = '')
+        V5 = Review(name = '')
+        V6 = Review(name = '')
+        V7 = Review(name = '')
+        V8 = Review(name = '')
+        V9 = Review(name = '')
+        V10 = Review(name = '')
+        V11 = Review(name = '')
+        V12 = Review(name = '')
+        V13 = Review(name = '')
+        V14 = Review(name = '')
+        V15 = Review(name = '')
+        V16 = Review(name = '')
+        V17 = Review(name = '')
+        V18 = Review(name = '')
+        V19 = Review(name = '')
+        V20 = Review(name = '')
+        V21 = Review(name = '')
+        V22 = Review(name = '')
+        V23 = Review(name = '')
+        V24 = Review(name = '')
+        V25 = Review(name = '')
+        V26 = Review(name = '')
+        V27 = Review(name = '')
+        V28 = Review(name = '')
+        V29 = Review(name = '')
+        V30 = Review(name = '')
 
         allreviews = [V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, V29, V30]
         return allreviews
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     with app.app_context():
         print("Clearing db...")
         Bunny.query.delete()
-        Rating.query.delete()
+        Log.query.delete()
         User.query.delete()
         Review.query.delete()
 
@@ -119,9 +119,9 @@ if __name__ == '__main__':
         db.session.add_all(users)
         db.session.commit()
 
-        print("Seeding ratings...")
-        ratings = create_ratings(bunnies, users)
-        db.session.add_all(ratings)
+        print("Seeding logs...")
+        logs = create_logs(bunnies, users)
+        db.session.add_all(logs)
         db.session.commit()
 
         print("Seeding reviews...")

@@ -1,60 +1,60 @@
 import React, { useState } from "react";
-import "./Restaurant.css"
+import "./Bunnies.css"
 
-function NewRestaurantForm({ addRestaurantToState }) {
+function NewBunnyForm({ addBunnyToState }) {
     const [name, setName] = useState("");
-    const [rating, setRating] = useState("");
+    const [log, setLog] = useState("");
 
     const handleNameChange = (event) => {
     setName(event.target.value);
     };
 
-    const handleRatingChange = (event) => {
-    setRating(event.target.value);
+    const handleLogChange = (event) => {
+    setLog(event.target.value);
     };
 
     const handleSubmit = async (event) => {
     event.preventDefault();
     
 
-    if (!name || isNaN(rating) || rating < 1 || rating > 5) {
-        alert("Invalid input. Please provide a valid name and rating between 1 and 5.");
+    if (!name || isNaN(log) || log < 1 || log > 5) {
+        alert("Invalid input. Please provide a valid name and log between 1 and 5.");
         return;
     }
 
-    const newRestaurant = {
+    const newBunny = {
         name: name,
-        rating: parseInt(rating),
+        log: parseInt(log),
     };
 
-    // Call the function provided by the parent component to add the restaurant
-    addRestaurantToState(newRestaurant);
+    // Call the function provided by the parent component to add the bunny
+    addBunnyToState(newBunny);
 
     // Reset form fields
     setName("");
-    setRating("");
+    setLog("");
     };
 
     return (
-    <div className="new-restaurant-form">
-        <h2>New Restaurant</h2>
+    <div className="new-bunny-form">
+        <h2>New Bunny</h2>
         <form onSubmit={handleSubmit}>
         <input
             type="text"
-            placeholder="Restaurant Name"
+            placeholder="Bunny Name"
             value={name}
             onChange={handleNameChange}
         />
         <input
             type="number"
-            placeholder="Rating 1-5"
-            value={rating}
-            onChange={handleRatingChange}
+            placeholder="Log 1-5"
+            value={log}
+            onChange={handleLogChange}
         />
-        <button type="submit">Add Restaurant</button>
+        <button type="submit">Add Bunny</button>
         </form>
     </div>
     );
 }
 
-export default NewRestaurantForm;
+export default NewBunnyForm;
