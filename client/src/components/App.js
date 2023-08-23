@@ -1,8 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Route } from "react-router-dom";
+import React from 'react';
+import '../App.css';
+import Header from "./Header"
+import PageContainer from "./PageContainer"
+import '../darkMode.css';
+
+
 
 function App() {
-  return <h1>Phase 4 Project Client</h1>;
+  
+  return (
+    <div className="App">
+      <header className="App-header">
+        <Header />
+      </header>
+      <PageContainer />
+    </div>
+  );
 }
-
 export default App;
