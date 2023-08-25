@@ -13,22 +13,21 @@ from config import db, bcrypt
 class Bunny(db.Model, SerializerMixin):
     __tablename__ = 'bunnies'
 
+    # Add serialization rules
     # serialize_rules = ( '-reviews', '-user.reviews', )
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    
 
     # Add relationship
-
-
+    
     logs = db.relationship( 'Log', back_populates = 'bunny', cascade = 'all, delete-orphan' )
     users = association_proxy( 'logs', 'user' )
 
-    # Add serialization rules
-    
     def __repr__(self):
         return f'<Bunny id={self.id} name={self.name}>'
+    
+
 
 
 class User(db.Model, SerializerMixin):
