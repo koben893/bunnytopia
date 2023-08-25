@@ -4,7 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 import Logs from './Reviews'
 import Bunnies from "./Bunnies"
 import Reviews from './Reviews';
-import About from './About'
 
 function PageContainer() {
     return (
@@ -22,9 +21,9 @@ function PageContainer() {
         {/* <Route path="/">
             <Home />
         </Route> */}
-        <Route path="/about">
+        {/* <Route path="/about">
             <About />
-        </Route>
+        </Route> */}
         </Switch>
         
     </>
