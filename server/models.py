@@ -6,9 +6,10 @@ from sqlalchemy.orm import validates
 from flask_restful import Api
 from sqlalchemy.ext.hybrid import hybrid_property
 from config import db, bcrypt
+from flask_login import UserMixin
+from flask_bcrypt import Bcrypt
 
-# Models go here!
-
+bcrypt = Bcrypt()
 
 class Bunny(db.Model, SerializerMixin):
     __tablename__ = 'bunnies'
@@ -16,7 +17,7 @@ class Bunny(db.Model, SerializerMixin):
     # Add serialization rules
     # serialize_rules = ( '-reviews', '-user.reviews', )
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String)
 
     # Add relationship
@@ -30,7 +31,7 @@ class Bunny(db.Model, SerializerMixin):
 
 
 
-class User(db.Model, SerializerMixin):
+class User(db.Model, SerializerMixin, UserMixin):
     __tablename__ = 'users'
     # Add serialization rules
     #serialize_rules = ( '-reviews.user', '-reviews.bunny.reviews' )
@@ -46,6 +47,16 @@ class User(db.Model, SerializerMixin):
     logs = db.relationship( 'Log', back_populates = 'user' )
     bunnies = association_proxy( 'logs', 'bunny' )
     
+    def __init__(self, name, username, email):
+        self.name = name
+        self.username = username
+        self.email = email
+
+    def set_password(self, password):
+        self._password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+
+
     # Add validation
     @validates( 'name' )
     def validate_name( self, key, new_name ):
@@ -74,9 +85,8 @@ class User(db.Model, SerializerMixin):
             password.encode('utf-8'))
         self._password_hash = password_hash.decode('utf-8')
 
-    def authenticate(self, password):
-        return bcrypt.check_password_hash(
-            self._password_hash, password.encode('utf-8'))
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password)
 
 
 class Log(db.Model, SerializerMixin):

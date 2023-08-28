@@ -15,7 +15,7 @@ from flask import make_response, jsonify, request, session
 
 @app.route('/')
 def index():
-    return '<h1>Phase 4 Project Server</h1>'
+    return '<h1>Bunnytopia</h1>'
 
 class Bunnies(Resource):
     def get(self):
