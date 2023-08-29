@@ -1,9 +1,20 @@
+#library imports
 from random import randint, choice as rc
 
+#remote library imports
 from faker import Faker
+from flask_bcrypt import Bcrypt
+from flask import Flask
+from models import Bunny, Log, User, Review
+from flask_login import LoginManager, login_user, current_user
+from config import app, db, bcrypt
 
-from app import app
-from models import db, Bunny, Log, User, Review
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+# db.init_app(app)
+# bcrypt = Bcrypt(app)
+# login_manager = LoginManager(app)
+# login_manager.login_view = 'login'
 
 fake = Faker()
 
@@ -16,40 +27,27 @@ def clear_database():
         Review.query.delete()
         db.session.commit()
 
-
-def bunnies():
+def seed_bunnies(bunny_data):
     with app.app_context():
-        R1= Bunny(name = 'Als Burger Joint')
-        R2= Bunny(name = 'Connies Drive Through')
-        R3= Bunny(name = 'Hole in the Wall')
-        R4= Bunny(name = 'Bella Sera')
-        R5= Bunny(name = 'Mario and Luigi')
-        R6= Bunny(name = 'Mamma Mias')
-        R7= Bunny(name = 'Jeffs Pancake House')
-        R8= Bunny(name = 'MCdonalds Waffles')
-        R9= Bunny(name = 'The V Cafe')
-        R10= Bunny(name = 'Bobs Gator Shack')
-
-        allbunnies = [R1, R2, R3, R4, R5, R6, R7, R8, R9, R10]
-
-
-        return allbunnies
-
+        bunny_objects = []
+        for bunny_id, bunny_name in bunny_data.items():
+            bunny = Bunny(name=bunny_name)
+            bunny_objects.append(bunny)
+        return bunny_objects
 
 def create_users():
     users = []
-    for _ in range(20):
-        u = User(
-            name=fake.name(),
-            email= fake.email(),
-            username= fake.user_name(),
-
+    for user_data in users_data:
+        user = User(
+            name=user_data["name"],
+            username=user_data["username"],
+            email=user_data["email"]
         )
-        u.password_hash = fake.password()
-        users.append(u)
-
+        user.password_hash = bcrypt.generate_password_hash(user_data["password"]).decode('utf-8')  # Hash and set the password
+        users.append(user)
+        db.session.add(user)
+    db.session.commit()
     return users
-
 
 def create_logs(bunnies, users):
     logs = []
@@ -99,34 +97,82 @@ def reviews():
         allreviews = [V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, V29, V30]
         return allreviews
 
-
 if __name__ == '__main__':
-
     with app.app_context():
         print("Clearing db...")
-        Bunny.query.delete()
-        Log.query.delete()
-        User.query.delete()
-        Review.query.delete()
+        clear_database()
 
         print("Seeding bunnies...")
-        bunnies = bunnies()
-        db.session.add_all(bunnies)
+        bunny_data = {
+            1: "Patches",
+            2: "Bugs",
+            3: "Marble",
+            4: "Boots",
+            5: "Buttercup",
+            6: "Diamond",
+            7: "Recces",
+            8: "Nigella",
+            9: "Fluff",
+            10: "Bambi",
+            11: "Elsa",
+            12: "Bernadette",
+            13: "Tillie",
+            14: "Pumpkin",
+            15: "Jasmine",
+            16: "Paloma",
+            17: "Delilah",
+            18: "Louise",
+            19: "Abbi",
+            20: "Djali",
+            21: "Dolores",
+            22: "Anja",
+            23: "Daphne",
+            24: "Nala",
+            25: "Serena",
+            26: "White Spot",
+            27: "Boots",
+            28: "Twin",
+            29: "Dark Ear",
+            30: "Abby"
+        }
+    
+        bunny_objects = seed_bunnies(bunny_data)
+        db.session.add_all(bunny_objects)
         db.session.commit()
+        print("Bunnies objects seeded successfully!")
 
-        print("Seeding users...")
+        print("Creating users...")
+        users_data = [
+            {
+                "name": "Andrew O'Brien",
+                "username": "AOBrien",
+                "email": "aobrienaf@gmail.com",
+                "password": "123456"
+            },
+            {
+                "name": "Erin O'Brien",
+                "username": "EOBrien",
+                "email": "aobrienaf@gmail.com",
+                "password": "password"
+            },
+            {
+                "name": "David O'Brien",
+                "username": "DOBrien",
+                "email": "dnrobrien@hotmail.com",
+                "password": "Passw0rd"
+            }
+        ]
         users = create_users()
-        db.session.add_all(users)
-        db.session.commit()
+        print("Users objects created successfully!")
 
         print("Seeding logs...")
-        logs = create_logs(bunnies, users)
+        logs = create_logs(bunny_objects, users)
         db.session.add_all(logs)
+
+        reviews_list = reviews()
+        db.session.add_all(reviews_list)
+        
         db.session.commit()
 
-        print("Seeding reviews...")
-        reviews = reviews()
-        db.session.add_all(reviews)
-        db.session.commit()
-
+        print("Seeding users, logs, and reviews...")
         print("Done seeding!")
