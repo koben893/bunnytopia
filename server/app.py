@@ -12,8 +12,6 @@ from config import app, db, api
 # Add your model imports
 from models import Bunny, User, Log, Review
 
-
-db.create_all()
 # Views go here!
 
 @app.route('/')

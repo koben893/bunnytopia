@@ -9,7 +9,7 @@ from config import db, bcrypt
 from flask_login import UserMixin
 from flask_bcrypt import Bcrypt
 
-bcrypt = Bcrypt()
+# bcrypt = Bcrypt()
 
 class Bunny(db.Model, SerializerMixin):
     __tablename__ = 'bunnies'
@@ -34,7 +34,7 @@ class Bunny(db.Model, SerializerMixin):
 class User(db.Model, SerializerMixin, UserMixin):
     __tablename__ = 'users'
     # Add serialization rules
-    #serialize_rules = ( '-reviews.user', '-reviews.bunny.reviews' )
+    
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
