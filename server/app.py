@@ -3,14 +3,17 @@
 # Standard library imports
 
 # Remote library imports
+from flask import make_response, jsonify, request, session
+from flask_restful import Resource
 
 # Local imports
-from config import app, db, api, bcrypt
+from config import app, db, api
+
 # Add your model imports
 from models import Bunny, User, Log, Review
-from flask_restful import Resource
-from flask import make_response, jsonify, request, session
 
+
+db.create_all()
 # Views go here!
 
 @app.route('/')
@@ -30,8 +33,6 @@ class Bunnies(Resource):
         db.session.commit()
         return make_response(new_bunny.to_dict(), 201)
 
-api.add_resource (Bunnies, '/bunnies')
-
 class BunnyByID(Resource):
     def get(self,id):
         bunny = Bunny.query.filter_by(id=id).first()
@@ -47,32 +48,55 @@ class BunnyByID(Resource):
         db.session.delete(bunny)
         db.session.commit()
         return make_response ("", 204)
-    
+
+api.add_resource (Bunnies, '/bunnies')
 api.add_resource(BunnyByID, '/bunnies/<int:id>')
 
-class Users (Resource):
-    def get (self):
-        users = User.query.all()
-        users_dict_list = [user._to_dict_(rules = ('logs',)) for user in users]
-        if len(users) == 0:
-            return make_response({'error': 'no Users'}, 404)
-        return make_response(users_dict_list,200)
-    
-    def post (self):
+class Users(Resource):
+    def get(self):
+        return make_response ([u.to_dict() for u in User.query.all()])
+
+    def post(self):
         data = request.get_json()
-        newUser = User(
-            email = data['email'],
-            username= data["username"],
-            password = data["password"],
-            )
+
+        # Check if username already exists
+        existing_user = User.query.filter_by(username=data['username']).first()
+        if existing_user:
+            return make_response({"error": "Username already exists. Please choose another."}, 400)
+
         try:
-            db.session.add(newUser)
-            db.session.commit()
-            return make_response (newUser.to_dict(), 200)
+            # Add password
+            new_user = User(username=data['username'], password_hash=data['password'])
         except Exception as e:
-            db.session.rollback()
-            return make_response({'error': f'{repr(e)}'}, 422)
+            return make_response({"error": "Error while creating user: " + str(e)}, 400)
+
+        db.session.add(new_user)
+        db.session.commit()
+        session['user_id'] = new_user.id
+
+        return make_response(new_user.to_dict(), 201)
+
+class UserById(Resource):
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return make_response({"message" : "we have an error"}, 404)
+        
+        return make_response(user.to_dict())
     
+    def patch(self, id):
+        data = request.get_json()
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return make_response({"message" : "we have an error"}, 404)
+
+        for key in data:
+            setattr(user, key, data[key])
+
+        db.session.commit()
+        return make_response(user.to_dict())
+
+api.add_resource(UserById, '/users/<int:id>')
 api.add_resource(Users, '/users')
 
 class Logs(Resource):
@@ -121,41 +145,39 @@ api.add_resource (Reviews, '/reviews')
 
 
 
-class Login(Resource):
-    def post(self):
-        request_json = request.get_json()
-
-        username = request_json.get("username")
-        password = request_json.get("password")
-
-        user = User.query.filter_by(username = username).first()
-        
-
-        if user:
-            if user.authenticate(password):
-                print(user.id)
-                session['user_id'] = user.id
-                return user.to_dict(), 200
-        else:
-            return {'error': 'Invalid Credentials'}, 401
-        
-api.add_resource(Login, '/login')
-
-class Logout(Resource):
-    def delete(self):
-        
-        if session.get('user_id'):
-            
-            session['user_id'] = None
-            
-            return {}, 204
-        
-        return {'error': '401 Unauthorized'}, 401
+# Login
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
     
-api.add_resource(Logout, '/logout')
+    # Check if user exists
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return make_response({'error': 'User not found'}, 404)
+    
+    # Authenticate the user
+    if user.authenticate(password):
+        session['user_id'] = user.id
+        return make_response(user.to_dict(), 200)
+    else:
+        return make_response({'error': 'Incorrect password'}, 401)
 
+# Logout
+@app.route('/logout', methods=['DELETE'])
+def logout():
+    session['user_id'] = None
+    return make_response({'message': 'Logged out successfully'}, 204)
 
-
+# check if browser has session 
+@app.route('/check_session')
+def check_session ():
+    user = User.query.filter(User.id == session.get('user_id')).first()
+    if user:
+        return make_response (user.to_dict())
+    else:
+        return {'message': '401: Not Authorized'}, 401 
 
 
 
