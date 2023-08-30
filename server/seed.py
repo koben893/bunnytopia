@@ -51,11 +51,11 @@ def create_users():
 
 def create_logs(bunnies, users):
     logs = []
-    for _ in range(20):
+    for _ in range(30):
         r = Log(
             user_id=rc([user.id for user in users]),
             bunny_id=rc([bunny.id for bunny in bunnies]),
-            log=randint(1, 5)
+            log=randint(1, 1825)
         )
         logs.append(r)
 

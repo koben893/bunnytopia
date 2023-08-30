@@ -110,9 +110,9 @@ class Log(db.Model, SerializerMixin):
     # Add validation
     @validates ('log')
     def validates_log(self,key,new_log):
-        if 1 <= new_log <=5:
+        if 1 <= new_log <=1825:
             return new_log
-        raise ValueError ('Log must be between 1 and 5')
+        raise ValueError ('Rabbit must be between 1 and 1825 days old')
 
 
     def __repr__(self):
