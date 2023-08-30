@@ -33,6 +33,8 @@ def seed_bunnies(bunny_data):
         for bunny_id, bunny_name in bunny_data.items():
             bunny = Bunny(name=bunny_name)
             bunny_objects.append(bunny)
+        db.session.add_all(bunny_objects)
+        db.session.commit()
         return bunny_objects
 
 def create_users():
