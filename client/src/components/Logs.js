@@ -17,15 +17,15 @@ function Logs({ user, onLogin }) {
     console.log(logs);
     return (
         <div className="header">
-            <h1>Top Logs</h1>
+            <h1>Rabbit Logs</h1>
             <div className="grid-container">
                 {logs.map((log) => (
                     <div key={log.id} className="card">
-                        <h3>Log: {log.log}</h3>
-                        <p>User: {log.user_name}</p>
-                        <p>Bunny: {log.bunny_name}</p>
+                        <h3>Bunny Name: {log.bunny_name}</h3>
+                        <p>Owner: {log.user_name}</p>
+                        <p>Age: {log.log}</p>
                         <button className="cardbutton" type="submit">
-                            Favorites
+                            Favorite
                         </button>
                     </div>
                 ))}

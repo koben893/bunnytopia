@@ -16,19 +16,11 @@ function NavBar() {
     <>
       <NavLink
         className="nav-buttons"
-        to="/"
+        to="/login"
         exact
         style={linkStyles}
       >
-        Home
-      </NavLink>
-      <NavLink
-        className="nav-buttons"
-        to="/about"
-        exact
-        style={linkStyles}
-      >
-        About
+        Login
       </NavLink>
       <NavLink
         className="nav-buttons"
@@ -37,6 +29,14 @@ function NavBar() {
         style={linkStyles}
       >
         Bunnies
+      </NavLink>
+      <NavLink
+        className="nav-buttons"
+        to="/"
+        exact
+        style={linkStyles}
+      >
+        Schedule
       </NavLink>
       <NavLink
         to="/reviews"

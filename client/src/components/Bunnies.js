@@ -27,8 +27,8 @@ function Bunnies() {
                                 {bunny.logs}
                             </h1>
                             <h3>{bunny.name}</h3>
-
-                            <button className="cardbutton" type="submit">Favorites</button>
+                            <button className="cardbutton" type="submit">Ready to Breed</button>
+                            <button className="cardbutton" type="submit">Slaughter</button>
                         </div>
                     ))}
                 </div>

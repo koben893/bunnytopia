@@ -18,7 +18,7 @@ function NewBunnyForm({ addBunnyToState }) {
     
 
     if (!name || isNaN(log) || log < 1 || log > 5) {
-        alert("Invalid input. Please provide a valid name and log between 1 and 5.");
+        alert("Invalid input. Please provide a valid name and age between 1 and 1825.");
         return;
     }
 
@@ -47,12 +47,13 @@ function NewBunnyForm({ addBunnyToState }) {
         />
         <input
             type="number"
-            placeholder="Log 1-5"
+            placeholder="Bunny Age"
             value={log}
             onChange={handleLogChange}
         />
         <button type="submit">Add Bunny</button>
         </form>
+        <p></p>
     </div>
     );
 }
