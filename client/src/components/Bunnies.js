@@ -18,7 +18,7 @@ function Bunnies() {
 
         return (
             <div className="header">
-                <h1 className="center">Your bun buns</h1>
+                <h1 className="center">Your Bun Buns</h1>
                 <NewBunnyForm addBunnyToState={addBunnyToState}/>
                 <div className="grid-container">
                     {bunnies.map((bunny) => (
@@ -27,8 +27,8 @@ function Bunnies() {
                                 {bunny.logs}
                             </h1>
                             <h3>{bunny.name}</h3>
-
-                            <button className="cardbutton" type="submit">Favorites</button>
+                            <button className="cardbutton" type="submit">Slaughter</button>
+                            <button className="cardbutton" type="submit">Ready to Breed</button>
                         </div>
                     ))}
                 </div>

@@ -17,8 +17,8 @@ function NewBunnyForm({ addBunnyToState }) {
     event.preventDefault();
     
 
-    if (!name || isNaN(log) || log < 1 || log > 5) {
-        alert("Invalid input. Please provide a valid name and log between 1 and 5.");
+    if (!name || isNaN(log) || log < 1 || log > 1825) {
+        alert("Rabbit must be between 1 day and 1825 dys old");
         return;
     }
 
@@ -37,7 +37,7 @@ function NewBunnyForm({ addBunnyToState }) {
 
     return (
     <div className="new-bunny-form">
-        <h2>New Bunny</h2>
+        <h2>Add a New Bunny</h2>
         <form onSubmit={handleSubmit}>
         <input
             type="text"
@@ -47,12 +47,13 @@ function NewBunnyForm({ addBunnyToState }) {
         />
         <input
             type="number"
-            placeholder="Log 1-5"
+            placeholder="Age in days"
             value={log}
             onChange={handleLogChange}
         />
         <button type="submit">Add Bunny</button>
         </form>
+        <p></p>
     </div>
     );
 }

@@ -9,7 +9,6 @@ from config import db, bcrypt
 from flask_login import UserMixin
 from flask_bcrypt import Bcrypt
 
-# bcrypt = Bcrypt()
 
 class Bunny(db.Model, SerializerMixin):
     __tablename__ = 'bunnies'
@@ -29,8 +28,6 @@ class Bunny(db.Model, SerializerMixin):
         return f'<Bunny id={self.id} name={self.name}>'
     
 
-
-
 class User(db.Model, SerializerMixin, UserMixin):
     __tablename__ = 'users'
     # Add serialization rules
@@ -40,54 +37,45 @@ class User(db.Model, SerializerMixin, UserMixin):
     name = db.Column(db.String, nullable=False)
     username = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
-    _password_hash = db.Column(db.String)
+    _password_hash = db.Column(db.String, nullable=False)
     
 
     # Add relationship
-    logs = db.relationship( 'Log', back_populates = 'user' )
+    logs = db.relationship( 'Log', back_populates = 'user', cascade = 'all,delete-orphan' )
     bunnies = association_proxy( 'logs', 'bunny' )
+
+    serialize_rules = ('-log.user', '-_password_hash',)
     
-    def __init__(self, name, username, email):
-        self.name = name
-        self.username = username
-        self.email = email
-
-    def set_password(self, password):
-        self._password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-
-
-
-    # Add validation
-    @validates( 'name' )
-    def validate_name( self, key, new_name ):
-        if not new_name:
-            raise ValueError('must have a name!')
-        return new_name
-
-    @validates( 'age' )
-    def validate_age( self, key, new_age ):
-        if 21 <= new_age:
-            return new_age
-        raise ValueError('Must be older than 21')
-    
-    
-    def __repr__(self):
-        return f'<user id={self.id} name={self.name}>'
-    
-
-    @hybrid_property
+    # add password properties
+    @property
     def password_hash(self):
-        raise AttributeError('Password hashes may not be viewed.')
+        return self._password_hash
     
     @password_hash.setter
-    def password_hash(self, password):
-        password_hash = bcrypt.generate_password_hash(
-            password.encode('utf-8'))
-        self._password_hash = password_hash.decode('utf-8')
+    def password_hash(self, new_password_string):
+        plain_byte_obj = new_password_string.encode('utf-8')
+        encrypted_hash_object = bcrypt.generate_password_hash(plain_byte_obj)
+        hash_object_as_string = encrypted_hash_object.decode('utf-8')
+        self._password_hash = hash_object_as_string
 
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self._password_hash, password)
+    def authenticate(self, some_string):
+        return bcrypt.check_password_hash(self.password_hash, some_string.encode('utf-8'))
 
+    # Add validation
+    @validates('username')
+    def validate_username(self, key, new_username):
+        if not isinstance(new_username, str) or len(new_username) < 5 or len(new_username) > 25:
+            raise ValueError('Username must String between 5 and 25 characters')
+        return new_username
+
+    @validates('password_hash')
+    def validate_password_hash(self, key, new_password):
+        if not isinstance(new_password, str) or len(new_password) < 6 or len(new_password) > 25:
+            raise ValueError('Password must between 6 and 25 characters')
+        return new_password
+
+    def __repr__(self):
+        return f'<user id={self.id} name={self.name}>'
 
 class Log(db.Model, SerializerMixin):
     __tablename__ = 'logs'
@@ -110,9 +98,9 @@ class Log(db.Model, SerializerMixin):
     # Add validation
     @validates ('log')
     def validates_log(self,key,new_log):
-        if 1 <= new_log <=5:
+        if 1 <= new_log <= 1825:
             return new_log
-        raise ValueError ('Log must be between 1 and 5')
+        raise ValueError ('Rabbit must be between 1 day and 1825 dys old')
 
 
     def __repr__(self):
