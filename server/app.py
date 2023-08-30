@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-# Standard library imports
-
 # Remote library imports
 from flask import make_response, jsonify, request, session
 from flask_restful import Resource
