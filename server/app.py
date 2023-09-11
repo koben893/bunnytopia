@@ -22,26 +22,27 @@ class Bunnies(Resource):
     
     def post(self):
         data = request.get_json()
-        new_bunny = Bunny(name = data['name'], log = ['log'])
-        db.session.commit()
+        new_bunny = Bunny(name = data['name'])
+        db.session.add(new_bunny)
         db.session.commit()
         return make_response(new_bunny.to_dict(), 201)
 
 class BunnyByID(Resource):
-    def get(self,id):
+    def get(self, id):
         bunny = Bunny.query.filter_by(id=id).first()
         if not bunny:
             return make_response({"error": "Bunny not found"}, 404)
         return make_response(bunny.to_dict())
-    
-    def delete (self, id):
-        bunny = Bunny.query.filter_by_id(id=id).first()
+
+    def delete(self, id):
+        bunny = Bunny.query.filter_by(id=id).first()
         if not bunny:
-            return make_response ({"error": "Bunny not found"},404)
-        
+            return make_response({"error": "Bunny not found"}, 404)
+
         db.session.delete(bunny)
         db.session.commit()
-        return make_response ("", 204)
+        return make_response("", 204)
+
 
 api.add_resource (Bunnies, '/bunnies')
 api.add_resource(BunnyByID, '/bunnies/<int:id>')
@@ -128,7 +129,6 @@ class Logs(Resource):
 
 api.add_resource(Logs, '/logs')
 
-
 class Reviews(Resource):
     def get(self):
         reviews = Review.query.all()
@@ -136,8 +136,6 @@ class Reviews(Resource):
         return make_response (reviews_dict_list)
     
 api.add_resource (Reviews, '/reviews')
-
-
 
 # Login
 @app.route('/login', methods=['POST'])
@@ -171,12 +169,10 @@ def check_session ():
     if user:
         return make_response (user.to_dict())
     else:
-        return {'message': '401: Not Authorized'}, 401 
+        return {'message': '401: Not Authorized'}, 401  
 
-
-
+# Adding bunny to breeding schedule
 
 
 if __name__ == '__main__':
     app.run(port=5557, debug=True)
-

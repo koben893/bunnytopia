@@ -18,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 app.secret_key = '\xdf!`\xc71\xc0\x91\x17p\xb6\xd0A\xcc/NG\x13=\x1aZ\xc7\xc4\x87\x87'
+
 # Define metadata, instantiate db
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -30,9 +31,9 @@ db.init_app(app)
 
 # Instantiate REST API
 api = Api(app)
+
+# Instantiate Bcrypt
 bcrypt = Bcrypt(app)
-
-
 
 # Instantiate CORS
 CORS(app)
