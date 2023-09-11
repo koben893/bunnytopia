@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 const linkStyles = {
   display: "inline-block",
@@ -11,7 +11,25 @@ const linkStyles = {
   color: "orange",
 };
 
-function NavBar() {
+function NavBar({ user, handleUser }) {
+
+  const history = useHistory()
+  const handleLogout = () => {
+    fetch('/logout', {
+      method : "DELETE",
+    }).then(() => {
+      handleUser(null);
+      history.push('/')
+    })
+  }
+
+  function handleLogin(){
+    history.push('/login', {from:history.location.pathname})
+  }
+  function handleSignup(){
+    history.push('/signup', {from:history.location.pathname})
+  }
+
   return (
     <>
       <NavLink
@@ -24,14 +42,6 @@ function NavBar() {
       </NavLink>
       <NavLink
         className="nav-buttons"
-        to="/reviews"
-        exact
-        style={linkStyles}
-      >
-        Reviews
-      </NavLink>
-      <NavLink
-        className="nav-buttons"
         to="/bunnies"
         exact
         style={linkStyles}
@@ -39,7 +49,15 @@ function NavBar() {
         Bunnies
       </NavLink>
       <NavLink
+        className="nav-buttons"
         to="/"
+        exact
+        style={linkStyles}
+      >
+        Schedule
+      </NavLink>
+      <NavLink
+        to="/reviews"
         className="nav-buttons"
         exact
         style={linkStyles}
