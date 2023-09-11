@@ -8,13 +8,8 @@ from flask import Flask
 from models import Bunny, Log, User, Review
 from flask_login import LoginManager, login_user, current_user
 from config import app, db, bcrypt
+from sqlalchemy.orm.exc import UnmappedInstanceError
 
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-# db.init_app(app)
-# bcrypt = Bcrypt(app)
-# login_manager = LoginManager(app)
-# login_manager.login_view = 'login'
 
 fake = Faker()
 
@@ -30,33 +25,21 @@ def clear_database():
 def seed_bunnies(bunny_data):
     with app.app_context():
         bunny_objects = []
-        for bunny_id, bunny_name in bunny_data.items():
-            bunny = Bunny(name=bunny_name)
+        for bunny_id, (bunny_name, bunny_user) in bunny_data.items():
+            bunny = Bunny(name=bunny_name, user=bunny_user)
             bunny_objects.append(bunny)
         db.session.add_all(bunny_objects)
         db.session.commit()
         return bunny_objects
 
-def create_users():
-    users = []
-    for user_data in users_data:
-        user = User(
-            name=user_data["name"],
-            username=user_data["username"],
-            email=user_data["email"]
-        )
-        user.password_hash = bcrypt.generate_password_hash(user_data["password"]).decode('utf-8')  # Hash and set the password
-        users.append(user)
-        db.session.add(user)
-    db.session.commit()
-    return users
-
 def create_logs(bunnies, users):
     logs = []
     for _ in range(30):
+        random_bunny = rc(bunnies)
+        random_user = rc(users)
         r = Log(
-            user_id=rc([user.id for user in users]),
-            bunny_id=rc([bunny.id for bunny in bunnies]),
+            bunny=random_bunny,
+            user=random_user,
             log=randint(1, 1825)
         )
         logs.append(r)
@@ -104,38 +87,57 @@ if __name__ == '__main__':
         print("Clearing db...")
         clear_database()
 
+        print("Creating users...")
+        andrew = User(name="Andrew O'Brien", username="aobrien", email="andrew@gmail.com", password_hash='123456')
+        erin = User(name="Erin O'Brien", username="eobrien", email="erin@gmail.com", password_hash='789456')
+        david = User(name="David O'Brien", username="dobrien", email="david@gmail.com", password_hash='abcdef')
+
+        users_to_add = [andrew, erin, david]
+
+        for user in users_to_add:
+            try:
+                db.session.add(user)
+            except UnmappedInstanceError:
+                pass
+
+        db.session.commit()  # Commit users first
+
+        # Now, detach the user objects from the session
+        for user in users_to_add:
+            db.session.expunge(user)
+
         print("Seeding bunnies...")
         bunny_data = {
-            1: "Patches",
-            2: "Bugs",
-            3: "Marble",
-            4: "Boots",
-            5: "Buttercup",
-            6: "Diamond",
-            7: "Recces",
-            8: "Nigella",
-            9: "Fluff",
-            10: "Bambi",
-            11: "Elsa",
-            12: "Bernadette",
-            13: "Tillie",
-            14: "Pumpkin",
-            15: "Jasmine",
-            16: "Paloma",
-            17: "Delilah",
-            18: "Louise",
-            19: "Abbi",
-            20: "Djali",
-            21: "Dolores",
-            22: "Anja",
-            23: "Daphne",
-            24: "Nala",
-            25: "Serena",
-            26: "White Spot",
-            27: "Boots",
-            28: "Twin",
-            29: "Dark Ear",
-            30: "Abby"
+            1: ("Patches", erin),
+            2: ("Bugs", erin),
+            3: ("Marble", david),
+            4: ("Boots", david),
+            5: ("Buttercup", erin),
+            6: ("Diamond", erin),
+            7: ("Recces", erin),
+            8: ("Nigella", erin),
+            9: ("Fluff", erin),
+            10: ("Bambi", erin),
+            11: ("Elsa", erin),
+            12: ("Bernadette", erin),
+            13: ("Tillie", erin),
+            14: ("Pumpkin", david),
+            15: ("Jasmine", david),
+            16: ("Paloma", david),
+            17: ("Delilah", david),
+            18: ("Louise", david),
+            19: ("Abbi", david),
+            20: ("Djali", andrew),
+            21: ("Dolores", andrew),
+            22: ("Anja", andrew),
+            23: ("Daphne", andrew),
+            24: ("Nala", andrew),
+            25: ("Serena", andrew),
+            26: ("White Spot", andrew),
+            27: ("Boots", erin),
+            28: ("Twin", erin),
+            29: ("Dark Ear", david),
+            30: ("Abby", andrew)
         }
     
         bunny_objects = seed_bunnies(bunny_data)
@@ -143,33 +145,10 @@ if __name__ == '__main__':
         db.session.commit()
         print("Bunnies objects seeded successfully!")
 
-        print("Creating users...")
-        users_data = [
-            {
-                "name": "Andrew O'Brien",
-                "username": "AOBrien",
-                "email": "aobrienaf@gmail.com",
-                "password": "123456"
-            },
-            {
-                "name": "Erin O'Brien",
-                "username": "EOBrien",
-                "email": "aobrienaf@gmail.com",
-                "password": "password"
-            },
-            {
-                "name": "David O'Brien",
-                "username": "DOBrien",
-                "email": "dnrobrien@hotmail.com",
-                "password": "Passw0rd"
-            }
-        ]
-        users = create_users()
-        print("Users objects created successfully!")
-
         print("Seeding logs...")
-        logs = create_logs(bunny_objects, users)
+        logs = create_logs(bunny_objects, [andrew, erin, david])
         db.session.add_all(logs)
+        db.session.commit()
 
         reviews_list = reviews()
         db.session.add_all(reviews_list)

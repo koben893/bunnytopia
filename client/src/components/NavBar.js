@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 const linkStyles = {
   display: "inline-block",
@@ -11,7 +11,25 @@ const linkStyles = {
   color: "orange",
 };
 
-function NavBar() {
+function NavBar({ user, handleUser }) {
+
+  const history = useHistory()
+  const handleLogout = () => {
+    fetch('/logout', {
+      method : "DELETE",
+    }).then(() => {
+      handleUser(null);
+      history.push('/')
+    })
+  }
+
+  function handleLogin(){
+    history.push('/login', {from:history.location.pathname})
+  }
+  function handleSignup(){
+    history.push('/signup', {from:history.location.pathname})
+  }
+
   return (
     <>
       <NavLink

@@ -73,8 +73,8 @@ function Bunnies({ setSelectedBunnies }) {
                             {bunny.logs}
                         </h1>
                         <h3>{bunny.name}</h3>
-                        <button className="cardbutton" onClick={() => handleBreedClick(bunny.id)}>Ready to Breed</button>
-                        <button className="cardbutton" onClick={() => handleSlaughter(bunny.id)}>Slaughter</button>
+                        <button className="cardbutton" onClick={() => handleBreedClick(bunny)}>Ready to Breed</button>
+                        <button className="cardbutton" onClick={() => handleSlaughter(bunny.id)}>Harvest</button>
                     </div>
                 ))}
             </div>
