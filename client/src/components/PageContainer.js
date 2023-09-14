@@ -4,25 +4,37 @@ import Logs from './Logs'
 import BunnyApp from "./BunnyApp"
 import Reviews from './Reviews';
 import Login from './Login'
+import Schedule from './Schedule';
+import Signup from './Signup'
 
-function PageContainer() {
+function PageContainer({ user, handleUser }) {
+
+
     return (
         <>
             <Switch>
                 <Route path="/logs">
-                <Logs />
+                <Logs user={user} handleUser={handleUser}/>
                 </Route>
 
                 <Route path="/bunnies">
-                <BunnyApp />
+                <BunnyApp user={user} handleUser={handleUser}/>
                 </Route>
 
                 <Route path="/reviews">
-                <Reviews />
+                <Reviews user={user} handleUser={handleUser}/>
                 </Route>
 
                 <Route path="/login">
-                <Login />
+                <Login user={user} handleUser={handleUser}/>
+                </Route>
+
+                <Route path="/schedule">
+                <Schedule user={user} handleUser={handleUser}/>
+                </Route>
+
+                <Route path="/signup">
+                <Signup user={user} handleUser={handleUser}/>
                 </Route>
             </Switch>
         </>
