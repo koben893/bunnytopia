@@ -61,7 +61,7 @@ class Users(Resource):
 
         try:
             # Add password
-            new_user = User(username=data['username'], password_hash=data['password'])
+            new_user = User(name=data['name'], username=data['username'], email=data['email'], password_hash=data['password'])
         except Exception as e:
             return make_response({"error": "Error while creating user: " + str(e)}, 400)
 
@@ -165,7 +165,7 @@ def logout():
 # check if browser has session 
 @app.route('/check_session')
 def check_session ():
-    user = User.query.filter(User.id == session.get('user_id')).first()
+    user = User.query.filter(User.id == session.get('username')).first()
     if user:
         return make_response (user.to_dict())
     else:
