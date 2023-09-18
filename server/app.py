@@ -165,7 +165,7 @@ def logout():
 # check if browser has session 
 @app.route('/check_session')
 def check_session ():
-    user = User.query.filter(User.id == session.get('username')).first()
+    user = User.query.filter(User.id == session.get('user_id')).first()
     if user:
         return make_response (user.to_dict())
     else:
