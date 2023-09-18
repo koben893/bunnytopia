@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Header />
+        <Header user={user} handleUser={handleUser}/>
       </header>
       <PageContainer user={user} handleUser={handleUser}/>
     </div>

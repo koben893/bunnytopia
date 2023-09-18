@@ -43,7 +43,7 @@ function Bunnies({ setSelectedBunnies }) {
     }, [selectedBunnies, setSelectedBunnies]);
 
     const sendSelectedBunniesToBackend = () => {
-        fetch("http://127.0.0.1:5557/breeding", {
+        fetch("/breeding", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

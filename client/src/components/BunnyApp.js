@@ -13,7 +13,7 @@ function BunnyApp() {
   return (
     <div className="bunny-app">
       <Bunnies setSelectedBunnies={handleSelectedBunnyChange} />
-      <Schedule selectedBunnyIds={selectedBunnies} />
+      <Schedule selectedBunnies={selectedBunnies} />
     </div>
   );
 }

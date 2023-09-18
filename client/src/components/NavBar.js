@@ -53,7 +53,7 @@ function NavBar({ user, handleUser }) {
             Schedule
           </NavLink>
 
-          <button className="logout-button" onClick={handleLogout}>Log Out</button>
+          <button className="nav-buttons" style={linkStyles} onClick={handleLogout}>Log Out</button>
           </>
         ) : (
           <>
