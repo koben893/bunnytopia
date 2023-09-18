@@ -8,14 +8,18 @@ function Signup({ handleUser }) {
     const [serverError, setServerError] = useState('');
 
     const formSchema = yup.object().shape({
-        username: yup.string().required("Must enter a name").min(5).max(25),
-        password: yup.string().required("Must enter a password").min(6).max(15),
+        name: yup.string().required("Must enter a Name").min(4).max(25),
+        username: yup.string().required("Must enter a Username").min(5).max(25),
+        password: yup.string().required("Must enter a Password").min(6).max(15),
+        email: yup.string().required("Must enter an Email").min(5).max(25)
     });
 
     const formik = useFormik({
         initialValues: {
+            name: "",
             username: "",
             password: "",
+            email: "",
         },
         validationSchema: formSchema,
         onSubmit: (values) => {
@@ -52,6 +56,19 @@ function Signup({ handleUser }) {
                     <h2 className="text-center">Sign Up</h2>
                     {serverError && <div className="alert alert-danger">{serverError}</div>}
                     <form onSubmit={formik.handleSubmit}>
+                    <div className="mb-1">
+                            <label htmlFor='name' className='form-label'>Name:</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={formik.values.name}
+                                onChange={formik.handleChange}
+                                name='name'
+                                id='name'
+                                required
+                            />
+                            <p style={{ color: "red" }}>{formik.errors.name}</p>
+                        </div>
                         <div className="mb-1">
                             <label htmlFor='username' className='form-label'>Username:</label>
                             <input
@@ -77,6 +94,19 @@ function Signup({ handleUser }) {
                                 required
                             />
                             <p style={{ color: "red" }}>{formik.errors.password}</p>
+                        </div>
+                        <div className="mb-1">
+                            <label className='form-label'>Email:</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={formik.values.email}
+                                name='email'
+                                id='email'
+                                onChange={formik.handleChange}
+                                required
+                            />
+                            <p style={{ color: "red" }}>{formik.errors.email}</p>
                         </div>
                         <div className="text-center">
                             <button className="btn btn-warning" type="submit">
