@@ -61,7 +61,7 @@ class Users(Resource):
 
         try:
             # Add password
-            new_user = User(username=data['username'], password_hash=data['password'])
+            new_user = User(name=data['name'], username=data['username'], email=data['email'], password_hash=data['password'])
         except Exception as e:
             return make_response({"error": "Error while creating user: " + str(e)}, 400)
 

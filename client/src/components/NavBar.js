@@ -31,39 +31,63 @@ function NavBar({ user, handleUser }) {
   }
 
   return (
-    <>
-      <NavLink
-        className="nav-buttons"
-        to="/login"
-        exact
-        style={linkStyles}
-      >
-        Login
-      </NavLink>
-      <NavLink
-        className="nav-buttons"
-        to="/bunnies"
-        exact
-        style={linkStyles}
-      >
-        Bunnies
-      </NavLink>
-      <NavLink
-        className="nav-buttons"
-        to="/"
-        exact
-        style={linkStyles}
-      >
-        Schedule
-      </NavLink>
+    <div>
+      <div>
+        {user ? (
+          <>
+          <NavLink
+            className="nav-buttons"
+            to="/bunnies"
+            exact
+            style={linkStyles}
+          >
+            Bunnies
+          </NavLink>
+
+          <NavLink
+            className="nav-buttons"
+            to="/schedule"
+            exact
+            style={linkStyles}
+          >
+            Schedule
+          </NavLink>
+
+          <button className="logout-button" onClick={handleLogout}>Log Out</button>
+          </>
+        ) : (
+          <>
+            <NavLink
+              to="/signup"
+              className="nav-buttons"
+              exact
+              style={linkStyles}
+              onClick={handleSignup}
+            >
+              Signup
+            </NavLink>
+
+            <NavLink
+              className="nav-buttons"
+              to="/login"
+              exact
+              style={linkStyles}
+              onClick={handleLogin}
+            >
+              Login
+            </NavLink>
+          </>
+        )}
+      </div>
       <NavLink
         to="/reviews"
         className="nav-buttons"
         exact
         style={linkStyles}
       >
-        Schedule
+        Reviews
       </NavLink>
+
       <NavLink
         to="/logs"
         className="nav-buttons"
@@ -72,7 +96,7 @@ function NavBar({ user, handleUser }) {
       >
         Logs
       </NavLink>
-    </>
+    </div>
   );
 }
 
