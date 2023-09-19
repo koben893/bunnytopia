@@ -20,8 +20,8 @@ class Bunny(db.Model, SerializerMixin):
     # Add relationship
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='bunnies')
-    
     logs = db.relationship('Log', back_populates='bunny', cascade='all, delete-orphan')
+    breeding = db.relationship('Breeding', back_populates='bunny', cascade='all, delete-orphan')
 
     # Define serialization rules to exclude circular references
     serialize_rules = ('-user.bunnies', '-user.logs', '-logs.bunny')
@@ -41,6 +41,7 @@ class User(db.Model, SerializerMixin, UserMixin):
     # Add relationship
     bunnies = db.relationship('Bunny', back_populates='user')
     logs = db.relationship('Log', back_populates='user')
+    breeding = db.relationship('Breeding', back_populates='user')
 
     # Define serialization rules to exclude circular references
     serialize_rules = ('-bunnies.user', '-logs.user')
@@ -115,3 +116,16 @@ class Review(db.Model, SerializerMixin):
     
     def __repr__(self):
         return f'<Review id={self.id} name={self.name}>'
+    
+class Breeding(db.Model, SerializerMixin):
+    __tablename__ = 'breeding'
+
+    id = db.Column(db.Integer, primary_key=True)
+    bunny_id = db.Column(db.Integer, db.ForeignKey('bunnies.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    bunny = db.relationship('Bunny', back_populates='breeding')
+    user = db.relationship('User', back_populates='breeding')
+
+    def __repr__(self):
+        return f'<Breeding id={self.id} name={self.name}>'
