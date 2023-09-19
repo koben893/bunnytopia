@@ -6,7 +6,7 @@ from flask_restful import Resource
 from config import app, db, api
 
 # Add your model imports
-from models import Bunny, User, Log, Review
+from models import Bunny, User, Log, Review, Breeding
 
 # Views go here!
 
@@ -172,7 +172,21 @@ def check_session ():
         return {'message': '401: Not Authorized'}, 401  
 
 # Adding bunny to breeding schedule
+@app.route('/breeding', methods=['POST'])
+def add_bunny_to_schedule():
+    data = request.get_json()
+    # Extract bunny IDs and other data from the request
+    bunny_ids = data.get('bunny_ids', [])
+    user_id = data.get('user_id')
 
+    # Create entries in the Breeding table for the selected bunnies
+    for bunny_id in bunny_ids:
+        breeding_entry = Breeding(bunny_id=bunny_id, user_id=user_id)
+        db.session.add(breeding_entry)
+
+    db.session.commit()
+
+    return make_response({'message': 'Bunnies added to breeding schedule'}, 201)
 
 if __name__ == '__main__':
     app.run(port=5557, debug=True)

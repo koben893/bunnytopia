@@ -6,7 +6,7 @@ function Schedule({ selectedBunnies }) {
         <div className="header">
             <h1 className="center">Selected Bunnies for Breeding:</h1>
             <div className="grid-container">
-            {selectedBunnies.map((bunnyId) => (
+            {selectedBunnies?.map((bunnyId) => (
                 <div key={bunnyId.id} className="card">
                 <h1>
                 {bunnyId.logs}

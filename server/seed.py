@@ -5,7 +5,7 @@ from random import randint, choice as rc
 from faker import Faker
 from flask_bcrypt import Bcrypt
 from flask import Flask
-from models import Bunny, Log, User, Review
+from models import Bunny, Log, User, Review, Breeding
 from flask_login import LoginManager, login_user, current_user
 from config import app, db, bcrypt
 from sqlalchemy.orm.exc import UnmappedInstanceError
