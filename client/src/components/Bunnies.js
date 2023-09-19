@@ -3,7 +3,7 @@ import NewBunnyForm from "./NewBunnyForm";
 import './Bunnies.css';
 
 
-function Bunnies({ setSelectedBunnies }) {
+function Bunnies({ setSelectedBunnies, setSelectedBunniesInParent }) {
 
     const [bunnies, setBunnies] = useState([]);
     const [selectedBunnies, updateSelectedBunnies] = useState([]); // Change the state variable name
@@ -13,13 +13,13 @@ function Bunnies({ setSelectedBunnies }) {
     }
 
     useEffect(() => {
-        fetch('http://127.0.0.1:5557/bunnies')
+        fetch('/bunnies')
             .then((response) => response.json())
             .then((data) => setBunnies(data));
     }, []);
 
     const handleSlaughter = (bunnyId) => {
-        fetch(`http://127.0.0.1:5557/bunnies/${bunnyId}`, {
+        fetch(`/bunnies/${bunnyId}`, {
             method: 'DELETE',
         })
         .then((response) => {
@@ -52,7 +52,11 @@ function Bunnies({ setSelectedBunnies }) {
         })
         .then((response) => {
             if (response.ok) {
+                // Clear the selected bunnies state
                 setSelectedBunnies([]);
+                
+                // Add the selected bunnies to the schedule in the parent component
+                setSelectedBunniesInParent(selectedBunnies);
             } else {
                 console.error("Failed to send selected bunnies to the backend.");
             }
