@@ -24,7 +24,7 @@ class Bunny(db.Model, SerializerMixin):
     breeding = db.relationship('Breeding', back_populates='bunny', cascade='all, delete-orphan')
 
     # Define serialization rules to exclude circular references
-    serialize_rules = ('-user.bunnies', '-user.logs', '-logs.bunny')
+    serialize_rules = ('-user.bunnies', '-user.logs', '-logs', '-breeding', '-user.breeding')
 
     def __repr__(self):
         return f'<Bunny id={self.id} name={self.name}>'
@@ -44,7 +44,7 @@ class User(db.Model, SerializerMixin, UserMixin):
     breeding = db.relationship('Breeding', back_populates='user')
 
     # Define serialization rules to exclude circular references
-    serialize_rules = ('-bunnies.user', '-logs.user')
+    serialize_rules = ('-bunnies.user', '-logs.user', '-breeding.user')
 
     @property
     def password_hash(self):
@@ -89,7 +89,7 @@ class Log(db.Model, SerializerMixin):
     bunny = db.relationship('Bunny', back_populates='logs')
 
     # Add serialization rules
-    serialize_rules = ('-user.bunnies', '-bunny.logs')
+    serialize_rules = ('-user.bunnies', '-bunny.logs', '-user.logs')
     
     # Add validation
     @validates ('log')
@@ -126,6 +126,9 @@ class Breeding(db.Model, SerializerMixin):
 
     bunny = db.relationship('Bunny', back_populates='breeding')
     user = db.relationship('User', back_populates='breeding')
+
+        # Define serialization rules to exclude circular references
+    serialize_rules = ('-bunny.breeding', '-user.breeding', )
 
     def __repr__(self):
         return f'<Breeding id={self.id} name={self.name}>'

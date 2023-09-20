@@ -17,7 +17,7 @@ def index():
 class Bunnies(Resource):
     def get(self):
         bunnies = Bunny.query.all()
-        bunnies_dict_list = [bunny.to_dict( rules= ('-logs',)) for bunny in bunnies]
+        bunnies_dict_list = [bunny.to_dict() for bunny in bunnies]
         return make_response (bunnies_dict_list)
     
     def post(self):
@@ -152,7 +152,7 @@ def login():
     # Authenticate the user
     if user.authenticate(password):
         session['user_id'] = user.id
-        return make_response(user.to_dict(), 200)
+        return make_response(user.to_dict(only = ('id', 'username')), 200)
     else:
         return make_response({'error': 'Incorrect password'}, 401)
 
@@ -167,17 +167,17 @@ def logout():
 def check_session ():
     user = User.query.filter(User.id == session.get('user_id')).first()
     if user:
-        return make_response (user.to_dict())
+        return make_response (user.to_dict(only = ('id', 'username')))
     else:
         return {'message': '401: Not Authorized'}, 401  
 
 # Adding bunny to breeding schedule
-@app.route('/breeding', methods=['POST'])
+@app.route('/breeding', methods=['POST','GET'])
 def add_bunny_to_schedule():
     data = request.get_json()
     # Extract bunny IDs and other data from the request
-    bunny_ids = data.get('bunny_ids', [])
-    user_id = data.get('user_id')
+    bunny_ids = [bunny['id'] for bunny in data]
+    user_id = data[0]['user_id']
 
     # Create entries in the Breeding table for the selected bunnies
     for bunny_id in bunny_ids:
@@ -187,6 +187,7 @@ def add_bunny_to_schedule():
     db.session.commit()
 
     return make_response({'message': 'Bunnies added to breeding schedule'}, 201)
+
 
 if __name__ == '__main__':
     app.run(port=5557, debug=True)
