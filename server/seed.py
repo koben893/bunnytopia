@@ -20,6 +20,7 @@ def clear_database():
         User.query.delete()
         Log.query.delete()
         Review.query.delete()
+        Breeding.query.delete()
         db.session.commit()
 
 def seed_bunnies(bunny_data):

@@ -61,11 +61,13 @@ function Bunnies({ setSelectedBunnies, setSelectedBunniesInParent }) {
                 console.error("Failed to send selected bunnies to the backend.");
             }
         })
+
         .catch((error) => {
             console.error("Error sending selected bunnies:", error);
         });
     };
 
+    console.log(selectedBunnies)
     return (
         <div className="header">
             <h1 className="center">Your Bun Buns</h1>
