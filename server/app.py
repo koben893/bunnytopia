@@ -174,19 +174,53 @@ def check_session ():
 # Adding bunny to breeding schedule
 @app.route('/breeding', methods=['POST','GET'])
 def add_bunny_to_schedule():
-    data = request.get_json()
-    # Extract bunny IDs and other data from the request
-    bunny_ids = [bunny['id'] for bunny in data]
-    user_id = data[0]['user_id']
+    if request.method == 'POST':
+        data = request.get_json()
+        # Extract bunny IDs and other data from the request
+        bunny_ids = [bunny['id'] for bunny in data]
+        user_id = data[0]['user_id']
 
-    # Create entries in the Breeding table for the selected bunnies
-    for bunny_id in bunny_ids:
-        breeding_entry = Breeding(bunny_id=bunny_id, user_id=user_id)
-        db.session.add(breeding_entry)
+        # Create entries in the Breeding table for the selected bunnies
+        for bunny_id in bunny_ids:
+            breeding_entry = Breeding(bunny_id=bunny_id, user_id=user_id)
+            db.session.add(breeding_entry)
 
-    db.session.commit()
+        db.session.commit()
 
-    return make_response({'message': 'Bunnies added to breeding schedule'}, 201)
+        return make_response({'message': 'Bunnies added to breeding schedule'}, 200)
+    
+    elif request.method == 'GET':
+        # Query the Breeding table to get the breeding entries
+        breeding_entries = Breeding.query.all()
+
+        # Create a list to store the serialized breeding entries
+        breeding_schedule = []
+
+        for entry in breeding_entries:
+            # You can access the bunny and user attributes through the relationships
+            bunny = entry.bunny
+            user = entry.user
+
+            if bunny and user:
+                # Serialize the breeding entry, excluding circular references
+                serialized_entry = {
+                    'id': entry.id,
+                    'bunny': {
+                        'id': bunny.id,
+                        'name': bunny.name,
+                        # Add other bunny attributes as needed
+                    },
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        # Add other user attributes as needed
+                    }
+                }
+
+                breeding_schedule.append(serialized_entry)
+
+        # Return the serialized breeding schedule as a JSON response
+        return jsonify(breeding_schedule)
 
 
 if __name__ == '__main__':
